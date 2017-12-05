@@ -1,0 +1,1 @@
+export const sanitiseLocation = (location) => location.replace('/', '')
