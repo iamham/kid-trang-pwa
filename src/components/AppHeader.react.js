@@ -10,9 +10,22 @@ class AppHeader extends React.Component {
         history: PropTypes.object,
         location: PropTypes.object,
     }
-    renderBackButton = () => {
+    renderActionButton = () => {
+        const Action = styled.div`
+            padding-right: 15px;
+            flex: 1;
+        `
         if (this.props.location.pathname === '/add-record') {
-            return <div onClick={this.props.history.goBack}>Back</div>
+            return <Action />
+        }
+    }
+    renderBackButton = () => {
+        const Back = styled.div`
+            padding-left: 15px;
+            flex: 1;
+        `
+        if (this.props.location.pathname === '/add-record') {
+            return <Back onClick={this.props.history.goBack}>Back</Back>
         }
     }
     render () {
@@ -28,10 +41,18 @@ class AppHeader extends React.Component {
             font-weight: 600;
             border-bottom: 1px solid #f0f0f2;
         `
+        
+        const Title = styled.div`
+            text-align: center;
+            flex: 1;
+        `
         return (
             <Header>
                 {this.renderBackButton()}
-                Kid-Trang
+                <Title>
+                    Kid-Trang
+                </Title>
+                {this.renderActionButton()}
             </Header>
         )
     }
