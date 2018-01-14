@@ -9,6 +9,7 @@ const Input = styled.input`
     text-align: right;
     height: 30px;
     font-size: 16px;
+    border: 0;
 `
 const InputWithTitleContainer = styled.div`
     width: 100%;
