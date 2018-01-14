@@ -85,7 +85,7 @@ class NewRecord extends React.PureComponent {
 
     renderNameInput = () => (
         <InputWithTitle
-            title='ชื่อ'
+            title=''
             changedValue={this.onNameChange}
             placeholder={moment(this.state.createTime).format('dddd, hA')}
             value={this.state.name}
