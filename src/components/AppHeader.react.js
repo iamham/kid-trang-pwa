@@ -34,35 +34,24 @@ const Back = styled.div`
 const Action = styled.div`
     padding-right: 15px;
     flex: 1;
+    text-align: right;
+    opacity: 0.6;
 `
 
 class AppHeader extends React.Component {
     static propTypes = {
-        history: PropTypes.object,
-        location: PropTypes.object,
-    }
-    renderActionButton = () => {
-        if (this.props.location.pathname === '/add-record') {
-            return <Action />
-        }
-    }
-    renderBackButton = () => {
-        if (this.props.location.pathname === '/add-record') {
-            return (
-                <Back onClick={this.props.history.goBack}>
-                    ยกเลิก
-                </Back>
-            )
-        }
+        text: PropTypes.string,
+        back: PropTypes.object,
+        action: PropTypes.object,
     }
     render () {
         return (
             <Header>
-                {this.renderBackButton()}
+                <Back>{this.props.back}</Back>
                 <Title>
-                    คิดตัง
+                    {this.props.text || 'คิดตังค์'}
                 </Title>
-                {this.renderActionButton()}
+                <Action>{this.props.action}</Action>
             </Header>
         )
     }

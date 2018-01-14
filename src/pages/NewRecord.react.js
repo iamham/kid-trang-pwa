@@ -5,9 +5,12 @@ import QRCode from 'qrcode'
 import generatePayload from 'promptpay-qr'
 import moment from 'moment'
 import ToonAvatar from 'cartoon-avatar'
+import propTypes from 'prop-types'
 
 import CardEmptyState from '../components/CardsEmptyState.react'
 import InputWithTitle from '../components/InputWithTitle.react'
+import AppHeader from '../components/AppHeader.react'
+import { getPPID } from '../data'
 
 const Row = styled.div`
     margin-bottom: -1px;
@@ -16,9 +19,15 @@ const Summary = styled.div`
     margin-top: 20px;
     background: white;
 `
+const NewRecordPage = styled.div`
+
+`
+const Action = styled.div`
+    display: inline;
+`
+
 const NewRecordContainer = styled.div`
     width: 100%;
-    height: 100%;
     padding-top: 60px;
     width: 100%;
     position: absolute;
@@ -43,6 +52,10 @@ const Avatar = styled.div`
 `
 
 class NewRecord extends React.PureComponent {
+    static propTypes = {
+        history: propTypes.object,
+    }
+
     state = {
         name: '',
         amount: '',
@@ -52,7 +65,7 @@ class NewRecord extends React.PureComponent {
 
     componentDidMount () {
         this.setState({ 
-            createTime: new Date()
+            createTime: new Date(),
         })
     }
 
@@ -61,8 +74,9 @@ class NewRecord extends React.PureComponent {
     getAmountPerPerson = () => this.state.amount / (this.state.numberOfPerson || 1)
 
     generateQRCode = () => {
+        const PPID = getPPID()
         const options = { type: 'svg', errorCorrectionLevel: 'L', margin: 2 }
-        const payload = generatePayload('087-566-8856', { amount: this.getAmountPerPerson() })
+        const payload = generatePayload(PPID, { amount: this.getAmountPerPerson() })
         QRCode.toString(payload, options, (err, svg) => {
             const encodedSVG = encodeURIComponent(svg)
             if (this.state.qr !== encodedSVG) {
@@ -82,6 +96,10 @@ class NewRecord extends React.PureComponent {
         const numberOfPerson = this.getSanitisedNumber(number)
         this.setState({ numberOfPerson: numberOfPerson })
     }
+
+    onSave = () => {
+
+    } 
 
     renderNameInput = () => (
         <InputWithTitle
@@ -122,15 +140,15 @@ class NewRecord extends React.PureComponent {
         )
     }
 
-    renderAvatar = () => {
+    renderAvatar = (i) => {
         const cartoonAvatar = ToonAvatar.generate_avatar()
-        return <Avatar><img src={cartoonAvatar} /></Avatar>
+        return <Avatar key={i}><img src={cartoonAvatar} /></Avatar>
     }
 
     renderAvatars = () => {
         let avatars = []
         for (let i = 0; i < this.state.numberOfPerson; i++) { 
-            avatars.push(this.renderAvatar())
+            avatars.push(this.renderAvatar(i))
         }
         return <Avatars>{avatars}</Avatars>
     }
@@ -140,23 +158,29 @@ class NewRecord extends React.PureComponent {
         const qrCode = this.state.amount
             ? <img src={'data:image/svg+xml,' + this.state.qr} />
             : null
+        const action = <Action onClick={this.onSave}>บันทึก</Action>
+        const back = <div onClick={this.props.history.goBack}>กลับ</div>
+
         return (
-            <NewRecordContainer>
-                <Row>
-                    {this.renderNameInput()}
-                </Row>
-                <Row>
-                    {this.renderAmountInput()}
-                </Row>
-                <Row>
-                    {this.renderNumberOfPersonInput()}
-                </Row>
-                <Summary>
-                    {this.renderSummary()}
-                    {this.renderAvatars()}
-                    {qrCode}
-                </Summary>
-            </NewRecordContainer>
+            <NewRecordPage>
+                <AppHeader action={action} back={back} />
+                <NewRecordContainer>
+                    <Row>
+                        {this.renderNameInput()}
+                    </Row>
+                    <Row>
+                        {this.renderAmountInput()}
+                    </Row>
+                    <Row>
+                        {this.renderNumberOfPersonInput()}
+                    </Row>
+                    <Summary>
+                        {this.renderSummary()}
+                        {this.renderAvatars()}
+                        {qrCode}
+                    </Summary>
+                </NewRecordContainer>
+            </NewRecordPage>
         )
     }
 }
